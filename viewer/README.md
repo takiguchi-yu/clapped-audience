@@ -1,9 +1,3 @@
-# インスパイアしたサービス
-
-リモート擬音さん
-
-https://www.remotegionsan.com/
-
 # アプリケーションのパッケージと頒布
 
 1. アプリの開発用依存関係に Electron Forge を追加し、その `import` コマンドで Forge のセットアップをします。
