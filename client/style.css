@@ -55,9 +55,10 @@ section::after
   backdrop-filter: blur(25px);
 }
 
-.box h2
+h2
 {
   color: #fff;
+  z-index: 11;
 }
 
 .box .reactions

@@ -1,0 +1,147 @@
+@import url('https://fonts.googleapis.com/css2?family=M+PLUS+1p:wght@100;300;400;500;700;800;900&display=swap');
+
+:root
+{
+  --pink: #ff5acd;
+  --yellow: #fbda61;
+}
+
+*
+{
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'M PLUS 1p', sans-serif;
+}
+
+body
+{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background: linear-gradient(45deg, var(--yellow), var(--pink));
+  transition: 0.5s ease-in-out
+}
+
+.card
+{
+  position: relative;
+  width: 400px;
+  height: 400px;
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 35px 80px rgba(0, 0, 0, 0.15);
+}
+
+.imgBox
+{
+  position: absolute;
+  left: 50%;
+  top: -15%;
+  transform: translateX(-50%);
+  width: 192px;
+  height: 192px;
+  overflow: hidden;
+}
+
+.imgBox img
+{
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.card .contents
+{
+  display: block;
+}
+
+.card .contents .box
+{
+  height: 220px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center; 
+}
+
+.card .contents .box button
+{
+  padding: 10px 30px;
+  margin-bottom: 10px;
+  border-radius: 5px;
+  border: none;
+  outline: none;
+  font-size: 1em;
+  font-weight: 500;
+  background: var(--pink);
+  color: #fff;
+  letter-spacing: 4px;
+  cursor: pointer;
+  width: 250px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.card .contents .box button:hover
+{
+  opacity: 0.9;
+}
+
+.card .contents .url
+{
+  font-size: 1.25em;
+  font-weight: 600;
+  color: #555;
+  line-height: 1.2em;
+  text-align: center;
+  padding: 10px;
+}
+
+.card .contents .box button.copy
+{
+  padding: 10px 30px;
+  margin-bottom: 10px;
+  border-radius: 5px;
+  border: none;
+  outline: none;
+  font-size: 1em;
+  font-weight: 500;
+  background: var(--yellow);
+  color: #555;
+  letter-spacing: 4px;
+  cursor: pointer;
+  width: 250px;
+}
+
+.result
+{
+  font-size: 1.25em;
+  font-weight: 600;
+  color: rgb(236, 43, 43);
+  /* line-height: 1.2em; */
+  text-align: center;
+  padding: 10px;
+}
+
+/* くるくる */
+.loading {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  border: 0.25rem solid rgba(255, 255, 255, 0.2);
+  border-top-color: rgb(255, 255, 255);
+  animation: spin 1s infinite linear;
+}
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
