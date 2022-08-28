@@ -26,8 +26,8 @@ if (env === 'development') {
 
 app.dock.hide() // Dockアイコンを非表示（MacOSのみ）
 
-let eventWindow = null  // イベント設定画面
-let reactionWindow = null     // リアクション表示画面
+let eventWindow     // イベント設定画面
+let reactionWindow  // リアクション表示画面
 
 function createEventWindow() {
 
@@ -56,15 +56,15 @@ function createReactionWindow () {
     webPreferences: {
       preload: path.join(__dirname, 'preload.js')
     },
-    // transparent: true,  // 透明化
-    // frame: false,
-    // hasShadow: false,
+    transparent: true,  // 透明化
+    frame: false,
+    hasShadow: false,
   })
   reactionWindow.setAlwaysOnTop(true, "screen-saver")  // 最前面表示
-  // reactionWindow.setVisibleOnAllWorkspaces(true)  // すべてのワークスペース（デスクトップ）で表示（MacOSのみ）
-  // reactionWindow.setIgnoreMouseEvents(true)  // マウスイベントを無効化
-  // reactionWindow.maximize()  // ウインドウサイズを最大化
-  reactionWindow.webContents.openDevTools() // デベロッパーツール
+  reactionWindow.setVisibleOnAllWorkspaces(true)  // すべてのワークスペース（デスクトップ）で表示（MacOSのみ）
+  reactionWindow.setIgnoreMouseEvents(true)  // マウスイベントを無効化
+  reactionWindow.maximize()  // ウインドウサイズを最大化
+  // reactionWindow.webContents.openDevTools() // デベロッパーツール
   reactionWindow.loadFile('./renderer/reaction.html')
 }
 
@@ -73,7 +73,9 @@ function createTaskBar () {
   tray = new Tray(icon)
 
   const contextMenu = Menu.buildFromTemplate([
-    { label: "終了する", click: function () { app.quit(); } }
+    { label: "設定...", click: function () { createEventWindow(); } },
+    { type: 'separator' },
+    { label: "終了する", click: function () { app.quit(); } },
   ])
   tray.setContextMenu(contextMenu)
 }
@@ -92,7 +94,7 @@ app.whenReady().then(() => {
   app.on('activate', function () {
     // macOS では、Dock アイコンのクリック時に他に開いているウインドウがない
     // 場合、アプリ内にウインドウを再作成するのが一般的です。
-    // if (BrowserWindow.getAllWindows().length === 0) createWindow() // Dockは非表示にしているのでコメントアウト
+    if (BrowserWindow.getAllWindows().length === 0) createTaskBar()
   })
 })
 
@@ -108,23 +110,17 @@ app.on('window-all-closed', function () {
 //----------------------------------------
 // 語尾に "にゃん" を付けて返す
 ipcMain.handle('nyan', (event, data) => {
-  return(`${data}にゃん`)
+  return(`${data}にゃん🐱`)
 })
 
 // 語尾に "わん" を付けて返す
 ipcMain.handle('wan', (event, data) => {
-  return(`${data}わん`)
+  return(`${data}わん🐶`)
 })
 
-// uuidv4
-const eventCode = null
-ipcMain.handle('uuidv4', () => {
-  if (eventCode) {
-    return eventCode
-  } else {
-    eventCode = uuidv4()
-    return eventCode
-  }
+const eventCode = uuidv4()
+ipcMain.handle('eventCode', () => {
+  return eventCode
 })
 
 // このファイルでは、アプリ内のとある他のメインプロセスコードを

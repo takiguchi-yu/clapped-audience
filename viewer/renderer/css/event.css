@@ -1,11 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=M+PLUS+1p:wght@100;300;400;500;700;800;900&display=swap');
 
-:root
-{
-  --pink: #ff5acd;
-  --yellow: #fbda61;
-}
-
 *
 {
   margin: 0;
@@ -20,7 +14,7 @@ body
   justify-content: center;
   align-items: center;
   min-height: 100vh;
-  background: linear-gradient(45deg, var(--yellow), var(--pink));
+  background: #444950;
   transition: 0.5s ease-in-out
 }
 
@@ -29,9 +23,8 @@ body
   position: relative;
   width: 400px;
   height: 400px;
-  background: #fff;
+  background: #282A36;
   border-radius: 10px;
-  box-shadow: 0 35px 80px rgba(0, 0, 0, 0.15);
 }
 
 .imgBox
@@ -77,11 +70,11 @@ body
   outline: none;
   font-size: 1em;
   font-weight: 500;
-  background: var(--pink);
+  background: #0D57C2;
   color: #fff;
   letter-spacing: 4px;
   cursor: pointer;
-  width: 250px;
+  width: 300px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -89,43 +82,18 @@ body
 
 .card .contents .box button:hover
 {
-  opacity: 0.9;
+  opacity: 0.8;
 }
 
 .card .contents .url
 {
   font-size: 1.25em;
   font-weight: 600;
-  color: #555;
+  color: #208CC5;
   line-height: 1.2em;
   text-align: center;
   padding: 10px;
-}
-
-.card .contents .box button.copy
-{
-  padding: 10px 30px;
-  margin-bottom: 10px;
-  border-radius: 5px;
-  border: none;
-  outline: none;
-  font-size: 1em;
-  font-weight: 500;
-  background: var(--yellow);
-  color: #555;
-  letter-spacing: 4px;
-  cursor: pointer;
-  width: 250px;
-}
-
-.result
-{
-  font-size: 1.25em;
-  font-weight: 600;
-  color: rgb(236, 43, 43);
-  /* line-height: 1.2em; */
-  text-align: center;
-  padding: 10px;
+  word-wrap: break-word;
 }
 
 /* くるくる */

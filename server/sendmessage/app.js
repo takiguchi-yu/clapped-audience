@@ -8,14 +8,26 @@ const ddb = new AWS.DynamoDB.DocumentClient({ apiVersion: '2012-08-10', region: 
 const { TABLE_NAME } = process.env;
 
 exports.handler = async event => {
-  console.log(JSON.stringify(event, 3, null));
+  const eventCode = JSON.parse(event.body).eventCode
+  console.log(eventCode);
   let connectionData;
   
   try {
-    connectionData = await ddb.scan({ TableName: TABLE_NAME, ProjectionExpression: 'connectionId' }).promise();
+    const queryParams = {
+      TableName: TABLE_NAME,
+      IndexName: 'eventCodeIndex',
+      ProjectionExpression: "connectionId, eventCode",
+      KeyConditionExpression: "eventCode = :eventCode",
+      ExpressionAttributeValues: {
+        ":eventCode": eventCode,
+      },
+    }
+    connectionData = await ddb.query(queryParams).promise();
 
     console.log(JSON.stringify(connectionData, null, 3));
+
   } catch (e) {
+    console.log(e.stack);
     return { statusCode: 500, body: e.stack };
   }
   
@@ -42,6 +54,7 @@ exports.handler = async event => {
   try {
     await Promise.all(postCalls);
   } catch (e) {
+    console.log(e.stack);
     return { statusCode: 500, body: e.stack };
   }
 

@@ -12,11 +12,9 @@ const AWS = require('aws-sdk');
 const ddb = new AWS.DynamoDB.DocumentClient({ apiVersion: '2012-08-10', region: process.env.AWS_REGION });
 
 exports.handler = async event => {
-  console.log(JSON.stringify(event, 3, null));
   const deleteParams = {
     TableName: process.env.TABLE_NAME,
     Key: {
-      eventCode: 'eb605ee4-4c78-4d62-b580-6b2ab216a8a0',
       connectionId: event.requestContext.connectionId,
     }
   };
@@ -24,6 +22,7 @@ exports.handler = async event => {
   try {
     await ddb.delete(deleteParams).promise();
   } catch (err) {
+    console.log(JSON.stringify(err));
     return { statusCode: 500, body: 'Failed to disconnect: ' + JSON.stringify(err) };
   }
 

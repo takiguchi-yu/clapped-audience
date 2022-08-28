@@ -1,23 +1,16 @@
 const button = document.getElementById('createBtn')
-const elCopy = document.createElement('i');
+const url = document.querySelector('.url')
 
-button.onclick = async () => {
+document.addEventListener('DOMContentLoaded', async (e) => {
+  const endpoint = 'http://127.0.0.1:5500/client/index.html'
+  url.innerHTML = endpoint + '?eventCode=' + await window.electronAPI.eventCode()
+});
 
-    if (button.classList.contains('copy')) {
-        var url = document.getElementById('url').innerHTML;
-        navigator.clipboard.writeText(url.trim())
-        document.querySelector('.result').innerHTML = 'コピーしました'
-    } else {
-        button.innerHTML = `<div class="loading"></div>`
-        setTimeout(() => {
-            button.classList.add('copy')
-            elCopy.className = 'fa-solid fa-copy'
-            button.appendChild(elCopy)
-            button.textContent = "URLをコピーする"
-        }, 500);
-
-        // イベントコード(uuidv4をメインプロセスから取得)
-
-        // リアクション画面を生成？
-    }
+button.onclick = () => {
+  button.innerHTML = `<div class="loading"></div>`
+  navigator.clipboard.writeText(url.innerHTML.trim())
+  setTimeout(() => {
+    button.innerHTML = ''
+    button.textContent = "URLをコピーしました"
+  }, 500);
 }

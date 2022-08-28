@@ -1,7 +1,7 @@
 import * as cdk from 'aws-cdk-lib';
 import { Duration, RemovalPolicy } from 'aws-cdk-lib';
 import { CfnApi, CfnDeployment, CfnIntegration, CfnRoute, CfnStage } from 'aws-cdk-lib/aws-apigatewayv2';
-import { AttributeType, BillingMode, Table } from 'aws-cdk-lib/aws-dynamodb';
+import { AttributeType, BillingMode, ProjectionType, Table } from 'aws-cdk-lib/aws-dynamodb';
 import { Effect, PolicyStatement, Role, ServicePrincipal } from 'aws-cdk-lib/aws-iam';
 import { AssetCode, Function, Runtime } from 'aws-cdk-lib/aws-lambda';
 import { Construct } from 'constructs';
@@ -24,16 +24,24 @@ export class ServerStack extends cdk.Stack {
     const table = new Table(this, `${name}-table`, {
       tableName: tableName,
       partitionKey: {
-        name: "eventCode",
-        type: AttributeType.STRING,
-      },
-      sortKey: {
         name: "connectionId",
         type: AttributeType.STRING,
       },
       readCapacity: 1,
       writeCapacity: 1,
       removalPolicy: RemovalPolicy.DESTROY, // DESTROY: テーブルにデータが入っている状態でcdk destroyが実行された時、データごとテーブルを削除する
+    });
+
+    // add global secandary index (GSI)
+    table.addGlobalSecondaryIndex({
+      indexName: 'eventCodeIndex',
+      partitionKey: {
+        name: "eventCode",
+        type: AttributeType.STRING,
+      },
+      readCapacity: 1,
+      writeCapacity: 1,
+      projectionType: ProjectionType.ALL,
     });
 
     const connectFunc = new Function(this, 'connect-lambda', {

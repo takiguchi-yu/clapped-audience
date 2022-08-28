@@ -18,8 +18,8 @@ window.addEventListener('DOMContentLoaded', () => {
 contextBridge.exposeInMainWorld(
   'electronAPI', 
   {
-    nyan: async (data) => await ipcRenderer.invoke('nyan', data),
-    wan:  async (data) => await ipcRenderer.invoke('wan', data),
-    uuidv4:  async () => await ipcRenderer.invoke('uuidv4'),
+    nyan: (data) => ipcRenderer.invoke('nyan', data),
+    wan: (data) => ipcRenderer.invoke('wan', data),
+    eventCode: () => ipcRenderer.invoke('eventCode'),
   }
 )
