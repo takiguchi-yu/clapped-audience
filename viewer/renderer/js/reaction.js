@@ -1,15 +1,6 @@
 (async () => {
-  const eventCode = await window.electronAPI.eventCode()
-  console.log(eventCode);
-  const sock = new WebSocket('wss://fyo5gy2ev5.execute-api.ap-northeast-1.amazonaws.com/dev?eventCode=' + eventCode);
-
-  // 接続処理
-  sock.addEventListener('open', (e) => {
-    console.log('Socket 接続成功');
-  });
-  
-  // サーバーからデータを受信
-  sock.addEventListener('message', async (e) => {
+  // メッセージ受信の本処理
+  function received(message) {
     const body = document.querySelector('body');  
     const reaction = document.createElement('img');
     const posY = Math.floor(Math.random() * window.innerHeight);
@@ -21,7 +12,8 @@
     reaction.style.left = posX + 'px';
     reaction.style.width = 100 + size + 'px';
     // reaction.src = JSON.parse(e.data).imagePath;
-    reaction.src = e.data;
+    // reaction.src = e.data;
+    reaction.src = message;
     reaction.className = 'item';
     const reactioAnimation = reaction.animate(
       [
@@ -38,15 +30,39 @@
     }
   
     body.appendChild(reaction);
-  });
+  };
   
-  sock.addEventListener('close', (e) => {
-    console.log('I lost a server');
-  });
+  function wsConnection(endpoint, eventCode) {
+    var ws = new WebSocket(`${endpoint}?eventCode=${eventCode}`);
+    var s = (l) => console.log(l);
   
-  sock.addEventListener('onerror', (e) => {
-    console.log('Some Error occurred');
-    sock.close()
-  });
-})()
+    // コネクション確立
+    ws.onopen = m => s(" CONNECTED")
+  
+    // メッセージ受信
+    ws.onmessage = m => {
+      // s(" RECEIVED: " + JSON.stringify(m.data, null, 3))
+      received(m.data)
+    }
+  
+    // コネクションエラー
+    ws.onerror = e => s(" ERROR")
+  
+    // コネクションクローズ (クローズしたら再接続)
+    ws.onclose = e => {
+      s(" CONNECTION CLOSED");
+      s(" RECONNECTING...");
+      setTimeout((function() {
+        var ws2 = new WebSocket(ws.url);
+        ws2.onopen = ws.onopen;
+        ws2.onmessage = ws.onmessage;
+        ws2.onclose = ws.onclose;
+        ws2.onerror = ws.onerror;
+        ws = ws2
+      }).bind(this), 5000)
+    }
+  }
 
+  const eventCode = await window.electronAPI.eventCode()
+  wsConnection('wss://fyo5gy2ev5.execute-api.ap-northeast-1.amazonaws.com/dev', eventCode);  
+})()
