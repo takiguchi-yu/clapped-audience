@@ -1,15 +1,15 @@
 // アプリケーションの寿命の制御と、ネイティブなブラウザウインドウを作成するモジュール
 const { app, BrowserWindow, Tray, Menu, nativeImage, ipcMain } = require('electron')
 const path = require('path')
-const log = require('electron-log')
 const { v4: uuidv4 } = require('uuid')
+const isWin = process.platform === 'win32'
 
-log.info("application version : ", app.getVersion())
+console.log("application version : ", app.getVersion())
 
 // メインプロセス(Nodejs)の多重起動防止
 const gotTheLock = app.requestSingleInstanceLock()
 if(!gotTheLock){
-  log.info('メインプロセスが多重起動しました。終了します。')
+  console.log('メインプロセスが多重起動しました。終了します。')
   app.quit();
 }
 
@@ -68,16 +68,18 @@ function createReactionWindow () {
   reactionWindow.loadFile('./renderer/reaction.html')
 }
 
+let tray = null
 function createTaskBar () {
-  const icon = nativeImage.createFromPath('./icon.png')
-  tray = new Tray(icon)
+  // const icon = nativeImage.createFromPath('./icon.png'); // なぜかこの書き方だとアイコンが表示されない
+  const icon = isWin ? __dirname + '/assets/tray_icon.ico' : __dirname + '/assets/tray_icon.png';
+  tray = new Tray(icon);
 
   const contextMenu = Menu.buildFromTemplate([
     { label: "設定...", click: function () { createEventWindow(); } },
     { type: 'separator' },
     { label: "終了する", click: function () { app.quit(); } },
-  ])
-  tray.setContextMenu(contextMenu)
+  ]);
+  tray.setContextMenu(contextMenu);
 }
 
 // このメソッドは、Electron の初期化が完了し、
