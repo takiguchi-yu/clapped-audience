@@ -1,0 +1,115 @@
+@import url('https://fonts.googleapis.com/css2?family=M+PLUS+1p:wght@100;300;400;500;700;800;900&display=swap');
+
+*
+{
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'M PLUS 1p', sans-serif;
+}
+
+body
+{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background: #444950;
+  transition: 0.5s ease-in-out
+}
+
+.card
+{
+  position: relative;
+  width: 400px;
+  height: 400px;
+  background: #282A36;
+  border-radius: 10px;
+}
+
+.imgBox
+{
+  position: absolute;
+  left: 50%;
+  top: -15%;
+  transform: translateX(-50%);
+  width: 192px;
+  height: 192px;
+  overflow: hidden;
+}
+
+.imgBox img
+{
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.card .contents
+{
+  display: block;
+}
+
+.card .contents .box
+{
+  height: 220px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center; 
+}
+
+.card .contents .box button
+{
+  padding: 10px 30px;
+  margin-bottom: 10px;
+  border-radius: 5px;
+  border: none;
+  outline: none;
+  font-size: 1em;
+  font-weight: 500;
+  background: #0D57C2;
+  color: #fff;
+  letter-spacing: 4px;
+  cursor: pointer;
+  width: 300px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.card .contents .box button:hover
+{
+  opacity: 0.8;
+}
+
+.card .contents .url
+{
+  font-size: 1.25em;
+  font-weight: 600;
+  color: #208CC5;
+  line-height: 1.2em;
+  text-align: center;
+  padding: 10px;
+  word-wrap: break-word;
+}
+
+/* くるくる */
+.loading {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  border: 0.25rem solid rgba(255, 255, 255, 0.2);
+  border-top-color: rgb(255, 255, 255);
+  animation: spin 1s infinite linear;
+}
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}

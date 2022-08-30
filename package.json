@@ -1,0 +1,20 @@
+{
+  "name": "clapped-audience",
+  "version": "0.0.3",
+  "description": "オンラインイベントリアクションツール",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/takiguchi-yu/clapped-audience.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/takiguchi-yu/clapped-audience/issues"
+  },
+  "homepage": "https://github.com/takiguchi-yu/clapped-audience#readme"
+}

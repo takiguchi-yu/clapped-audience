@@ -3,8 +3,8 @@ const s = new server({ port: 5001 });
 
 s.on('connection', (ws) => {
   // メッセージ送信
-  ws.on('message', (message) => {
-    console.log('Received: ' + message);
+  ws.on('message', message => {
+    console.log('Received Server: ' + message);
     s.clients.forEach((client) => {
       client.send(
         JSON.stringify({

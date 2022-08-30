@@ -1,15 +1,8 @@
 *.js
-!onconnect/app.js
-!ondisconnect/app.js
-!sendmessage/app.js
 !jest.config.js
 *.d.ts
 node_modules
-config.json
 
 # CDK asset staging directory
 .cdk.staging
 cdk.out
-
-# SAM
-.aws-sam

@@ -1,0 +1,34 @@
+name: Release
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  publish_on_mac:
+    runs-on: macos-latest
+    steps:
+    - uses: actions/checkout@v3
+    - uses: actions/setup-node@v3
+      with:
+        node-version: 16
+    - name: install dependencies
+      run: npm install --prefix viewer
+    - name: publish
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: npm run publish --prefix viewer
+      
+  publish_on_win:
+    runs-on: windows-latest
+    steps:
+    - uses: actions/checkout@v3       
+    - uses: actions/setup-node@v3
+      with:
+        node-version: 16
+    - name: install dependencies
+      run: cd viewer && npm install
+    - name: publish
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: cd viewer && npm run publish

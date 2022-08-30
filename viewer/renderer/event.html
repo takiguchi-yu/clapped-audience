@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <!-- https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP -->
+  <meta http-equiv="Content-Security-Policy" content="default-src * gap:; script-src * 'unsafe-inline' 'unsafe-eval'; connect-src *; img-src * data: blob: android-webview-video-poster:; style-src * 'unsafe-inline';">
+  <meta http-equiv="X-Content-Security-Policy" content="default-src 'self'; script-src 'self'">
+  <title>拍手喝采イベント設定</title> 
+  <link rel="stylesheet" href="./css/event.css">
+</head>
+<body>
+  <div class="card">
+    <div class="imgBox">
+      <img src="images/icon.png">
+    </div>
+    <div class="contents">
+      <div class="box">
+        <button class="button" id="createBtn">URLをコピーする</button>
+      </div>
+      <div id="url" class="url">
+        イベントコードの取得に失敗しました<br>@takiguchi-yu に問い合わせてください
+      </div>
+    </div>
+  </div>
+
+  <!-- You can also require other files to run in this process -->
+  <script src="./js/event.js"></script>
+</body>
+</html>
