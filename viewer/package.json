@@ -9,6 +9,7 @@
     "start": "electron-forge start",
     "package": "electron-forge package",
     "make": "electron-forge make",
+    "publish": "electron-forge publish",
     "build": "electron-packager . --icon=assets/app_icon.icns --overwrite"
   },
   "author": "takiguchi-yu",
