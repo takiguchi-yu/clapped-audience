@@ -1,6 +1,6 @@
 {
   "name": "clapped_audience",
-  "productName": "拍手喝采デモ版v0.0.3",
+  "productName": "拍手喝采デモ版v0.0.1",
   "version": "0.0.1",
   "description": "オンラインイベントリアクションツール発表者用アプリケーション",
   "main": "main.js",

@@ -22,8 +22,7 @@ module.exports = {
         repository: {
           owner: "takiguchi-yu",
           name: "clapped-audience"
-        },
-        draft: true
+        }
       }
     }
   ],
