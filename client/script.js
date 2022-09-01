@@ -1,9 +1,22 @@
+const endpoint = 'wss://fyo5gy2ev5.execute-api.ap-northeast-1.amazonaws.com/dev'
+
+const queryString = new URLSearchParams(location.search);
+const eventCode = queryString.get('eventCode')
+
+// 指数バックオフ設定値
+let initialReconnectDelay = 1000;
+let currentReconnectDelay = initialReconnectDelay;
+let maxReconnectDelay = 16000;
+
 function wsConnection(endpoint, eventCode) {
-  var ws = new WebSocket(`${endpoint}?eventCode=${eventCode}`);
-  var s = (l) => console.log(l);
+  let ws = new WebSocket(`${endpoint}?eventCode=${eventCode}`);
+  let s = (l) => console.log(l);
 
   // コネクション確立
-  ws.onopen = m => s(" CONNECTED")
+  ws.onopen = m => {
+    s(" CONNECTED")
+    currentReconnectDelay = initialReconnectDelay;
+  }
 
   // メッセージ受信 (クライアントには不要なのでコメントアウト)
   // ws.onmessage = m => s(" RECEIVED: " + JSON.stringify(m.data, null, 3))
@@ -14,15 +27,17 @@ function wsConnection(endpoint, eventCode) {
   // コネクションクローズ (クローズしたら再接続)
   ws.onclose = e => {
     s(" CONNECTION CLOSED");
-    s(" RECONNECTING...");
     setTimeout((function() {
-      var ws2 = new WebSocket(ws.url);
-      ws2.onopen = ws.onopen;
-      ws2.onmessage = ws.onmessage;
-      ws2.onclose = ws.onclose;
-      ws2.onerror = ws.onerror;
-      ws = ws2
-    }).bind(this), 5000)
+      reconnectToWebsocket()
+    }).bind(this), currentReconnectDelay + Math.floor(Math.random() * 3000))  // ランダム指数バックオフ
+  }
+
+  function reconnectToWebsocket() {
+    if(currentReconnectDelay < maxReconnectDelay) {
+      currentReconnectDelay*=2;
+      s(" RECONNECTION...");
+      wsConnection(endpoint, eventCode);
+    }
   }
 
   // リアクションボタンを押したときのイベントリスナーを登録
@@ -52,6 +67,4 @@ function wsConnection(endpoint, eventCode) {
   });
 }
 
-const queryString = new URLSearchParams(location.search);
-const eventCode = queryString.get('eventCode')
-wsConnection('wss://fyo5gy2ev5.execute-api.ap-northeast-1.amazonaws.com/dev', eventCode);
+wsConnection(endpoint, eventCode);

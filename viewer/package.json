@@ -1,7 +1,7 @@
 {
   "name": "clapped_audience",
   "productName": "ClappedAudience",
-  "version": "1.0.0",
+  "version": "0.0.9",
   "description": "オンラインイベントリアクションツール発表者用アプリケーション",
   "main": "main.js",
   "scripts": {
