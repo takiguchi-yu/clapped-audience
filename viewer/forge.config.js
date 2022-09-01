@@ -1,7 +1,10 @@
 module.exports = {
   packagerConfig: {
     icon: "./assets/app_icon",
-    overwrite: true
+    overwrite: true,
+    osxSign: {
+      identity: "takiguchi-yu",
+    }
   },
   makers: [
     {
