@@ -51,5 +51,5 @@ wsConnection(endpoint, eventCode);
 function sendMessage(buttonId) {
   const imgPath = document.getElementById(buttonId).querySelector('img').getAttribute('src')
   // console.log(imgPath);
-  ws.send(`{ "action": "sendmessage", "data": "${location.host}/${imgPath}", "eventCode": "${eventCode}"}`);
+  ws.send(`{ "action": "sendmessage", "data": "${location.protocol}//${location.host}/${imgPath}", "eventCode": "${eventCode}"}`);
 }
