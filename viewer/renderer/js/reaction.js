@@ -61,6 +61,7 @@ let maxReconnectDelay = 16000;
     // コネクションクローズ (クローズしたら再接続)
     ws.onclose = e => {
       s(" CONNECTION CLOSED");
+      
       setTimeout((function() {
         reconnectToWebsocket()
       }).bind(this), currentReconnectDelay + Math.floor(Math.random() * 3000))  // ランダム指数バックオフ

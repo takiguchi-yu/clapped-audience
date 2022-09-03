@@ -1,3 +1,6 @@
+const protocol = location.protocol
+const a = location.host
+console.log(a);
 const endpoint = 'wss://fyo5gy2ev5.execute-api.ap-northeast-1.amazonaws.com/dev'
 
 const queryString = new URLSearchParams(location.search);
@@ -27,6 +30,7 @@ function wsConnection(endpoint, eventCode) {
   // コネクションクローズ (クローズしたら再接続)
   ws.onclose = e => {
     s(" CONNECTION CLOSED");
+
     setTimeout((function() {
       reconnectToWebsocket()
     }).bind(this), currentReconnectDelay + Math.floor(Math.random() * 3000))  // ランダム指数バックオフ
@@ -43,27 +47,27 @@ function wsConnection(endpoint, eventCode) {
   // リアクションボタンを押したときのイベントリスナーを登録
   document.getElementById('item1').addEventListener('click', (e) => {
     const imgPath = document.getElementById('item1').querySelector('img').getAttribute('src')
-    ws.send(`{ "action": "sendmessage", "data": "${imgPath}", "eventCode": "${eventCode}"}`);
+    ws.send(`{ "action": "sendmessage", "data": "${location.host}/${imgPath}", "eventCode": "${eventCode}"}`);
   });
   document.getElementById('item2').addEventListener('click', (e) => {
     const imgPath = document.getElementById('item2').querySelector('img').getAttribute('src')
-    ws.send(`{ "action": "sendmessage", "data": "${imgPath}", "eventCode": "${eventCode}"}`);
+    ws.send(`{ "action": "sendmessage", "data": "${location.host}/${imgPath}", "eventCode": "${eventCode}"}`);
   });
   document.getElementById('item3').addEventListener('click', (e) => {
     const imgPath = document.getElementById('item3').querySelector('img').getAttribute('src')
-    ws.send(`{ "action": "sendmessage", "data": "${imgPath}", "eventCode": "${eventCode}"}`);
+    ws.send(`{ "action": "sendmessage", "data": "${location.host}/${imgPath}", "eventCode": "${eventCode}"}`);
   });
   document.getElementById('item4').addEventListener('click', (e) => {
     const imgPath = document.getElementById('item4').querySelector('img').getAttribute('src')
-    ws.send(`{ "action": "sendmessage", "data": "${imgPath}", "eventCode": "${eventCode}"}`);
+    ws.send(`{ "action": "sendmessage", "data": "${location.host}/${imgPath}", "eventCode": "${eventCode}"}`);
   });
   document.getElementById('item5').addEventListener('click', (e) => {
     const imgPath = document.getElementById('item5').querySelector('img').getAttribute('src')
-    ws.send(`{ "action": "sendmessage", "data": "${imgPath}", "eventCode": "${eventCode}"}`);
+    ws.send(`{ "action": "sendmessage", "data": "${location.host}/${imgPath}", "eventCode": "${eventCode}"}`);
   });
   document.getElementById('item6').addEventListener('click', (e) => {
     const imgPath = document.getElementById('item6').querySelector('img').getAttribute('src')
-    ws.send(`{ "action": "sendmessage", "data": "${imgPath}", "eventCode": "${eventCode}"}`);
+    ws.send(`{ "action": "sendmessage", "data": "${location.host}/${imgPath}", "eventCode": "${eventCode}"}`);
   });
 }
 
