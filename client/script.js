@@ -1,6 +1,3 @@
-const protocol = location.protocol
-const a = location.host
-console.log(a);
 const endpoint = 'wss://fyo5gy2ev5.execute-api.ap-northeast-1.amazonaws.com/dev'
 
 const queryString = new URLSearchParams(location.search);
@@ -11,8 +8,9 @@ let initialReconnectDelay = 1000;
 let currentReconnectDelay = initialReconnectDelay;
 let maxReconnectDelay = 16000;
 
+let ws  // WebSocket
 function wsConnection(endpoint, eventCode) {
-  let ws = new WebSocket(`${endpoint}?eventCode=${eventCode}`);
+  ws = new WebSocket(`${endpoint}?eventCode=${eventCode}`);
   let s = (l) => console.log(l);
 
   // コネクション確立
@@ -42,33 +40,16 @@ function wsConnection(endpoint, eventCode) {
       s(" RECONNECTION...");
       wsConnection(endpoint, eventCode);
     }
-  }
-
-  // リアクションボタンを押したときのイベントリスナーを登録
-  document.getElementById('item1').addEventListener('click', (e) => {
-    const imgPath = document.getElementById('item1').querySelector('img').getAttribute('src')
-    ws.send(`{ "action": "sendmessage", "data": "${location.host}/${imgPath}", "eventCode": "${eventCode}"}`);
-  });
-  document.getElementById('item2').addEventListener('click', (e) => {
-    const imgPath = document.getElementById('item2').querySelector('img').getAttribute('src')
-    ws.send(`{ "action": "sendmessage", "data": "${location.host}/${imgPath}", "eventCode": "${eventCode}"}`);
-  });
-  document.getElementById('item3').addEventListener('click', (e) => {
-    const imgPath = document.getElementById('item3').querySelector('img').getAttribute('src')
-    ws.send(`{ "action": "sendmessage", "data": "${location.host}/${imgPath}", "eventCode": "${eventCode}"}`);
-  });
-  document.getElementById('item4').addEventListener('click', (e) => {
-    const imgPath = document.getElementById('item4').querySelector('img').getAttribute('src')
-    ws.send(`{ "action": "sendmessage", "data": "${location.host}/${imgPath}", "eventCode": "${eventCode}"}`);
-  });
-  document.getElementById('item5').addEventListener('click', (e) => {
-    const imgPath = document.getElementById('item5').querySelector('img').getAttribute('src')
-    ws.send(`{ "action": "sendmessage", "data": "${location.host}/${imgPath}", "eventCode": "${eventCode}"}`);
-  });
-  document.getElementById('item6').addEventListener('click', (e) => {
-    const imgPath = document.getElementById('item6').querySelector('img').getAttribute('src')
-    ws.send(`{ "action": "sendmessage", "data": "${location.host}/${imgPath}", "eventCode": "${eventCode}"}`);
-  });
+  }  
 }
 
 wsConnection(endpoint, eventCode);
+
+
+
+// リアクションボタンが押されたときに呼ばれる
+function sendMessage(buttonId) {
+  const imgPath = document.getElementById(buttonId).querySelector('img').getAttribute('src')
+  // console.log(imgPath);
+  ws.send(`{ "action": "sendmessage", "data": "${location.host}/${imgPath}", "eventCode": "${eventCode}"}`);
+}
