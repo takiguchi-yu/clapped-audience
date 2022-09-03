@@ -15,6 +15,10 @@
 
 ![viewer](https://user-images.githubusercontent.com/8340629/187465891-1a8d4bc6-9a38-4531-ae5d-a7f6bac59661.jpg)
 
+```
+アプリケーションの「コード署名」と「公証」をしていないため、実行すると 警告⚠️ が表示されます。次の手順を実施することで回避できます。
+https://sp7pc.com/apple/mac/5734
+```
 
 ## 発表が終わったら
 
@@ -31,3 +35,14 @@ URL を教えてもらったらボタンを押すだけです。
 # インスパイアしたサービス
 
 * [リモート擬音さん](https://www.remotegionsan.com/)
+* [ClapHand](https://syobochim.hatenablog.com/entry/2020/10/31/205851)
+
+# ディレクトリの説明
+
+|ディレクトリ|説明|
+|-|-|
+|client|視聴者用の Web ページ|
+|server|リアクションサーバー<br>AWS に構築|
+|viewer|配信者用の アプリケーション<br>Electron で開発|
+|static-site|Amazon S3 の静的ホスティングを構築する CDK|
+|local-server|ローカルのリアクションサーバー|
