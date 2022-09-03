@@ -5,23 +5,33 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>拍手喝采クライアント</title>
-  <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
-  <link rel="stylesheet" href="style.css">
+  <link rel="shortcut icon" href="favicon.ico?d=1" type="image/x-icon">
+  <link rel="stylesheet" href="style.css?d=1">
 </head>
 <body>
   <section>
     <div class="box">
       <h2>今の気分は？</h2>
       <div class="reactions">
-        <div id="item1" class="item" style="--clr:#ff22bb;"><img src="images/pachipachi1.svg"></div>
-        <div id="item2" class="item" style="--clr:#00ccff;"><img src="images/pachipachi2.svg"></div>
-        <div id="item3" class="item" style="--clr:#22e622;"><img src="images/iine.svg"></div>
-        <div id="item4" class="item" style="--clr:#fabc4a;"><img src="images/naruhododesu.svg"></div>
-        <div id="item5" class="item" style="--clr:#f6f207;"><img src="images/wakaru.svg"></div>
-        <div id="item6" class="item" style="--clr:#e6225a;"><img src="images/fumufumu.svg"></div>
+        <button id="pachipachi1"   style="--clr:#ff22bb;" onclick="sendMessage(this.id)"><img src="images/pachipachi1.svg"></button>
+        <button id="pachipachi2"   style="--clr:#00ccff;" onclick="sendMessage(this.id)"><img src="images/pachipachi2.svg"></button>
+        <button id="iine"          style="--clr:#22e622;" onclick="sendMessage(this.id)"><img src="images/iine.svg"></button>
+        <button id="naruhododesu"  style="--clr:#fabc4a;" onclick="sendMessage(this.id)"><img src="images/naruhododesu.svg"></button>
+        <button id="wakaru"        style="--clr:#f6f207;" onclick="sendMessage(this.id)"><img src="images/wakaru.svg"></button>
+        <button id="fumufumu"      style="--clr:#e6225a;" onclick="sendMessage(this.id)"><img src="images/fumufumu.svg"></button>
+        <button id="oo1"           style="--clr:#9e22e6;" onclick="sendMessage(this.id)"><img src="images/oo1.svg"></button>
+        <button id="suge"          style="--clr:#e622bc;" onclick="sendMessage(this.id)"><img src="images/suge.svg"></button>
+        <button id="ok"            style="--clr:#2922e6;" onclick="sendMessage(this.id)"><img src="images/ok.svg"></button>
+        <button id="otsukare"      style="--clr:#ffffff;" onclick="sendMessage(this.id)"><img src="images/otsukare.svg"></button>
+        <button id="heart"         style="--clr:#ffffff;" onclick="sendMessage(this.id)"><img src="images/heart.svg"></button>
+        <button id="elastic"       style="--clr:#ffffff;" onclick="sendMessage(this.id)"><img src="images/elastic.svg"></button>
+        <button id="elasticsearch" style="--clr:#ffffff;" onclick="sendMessage(this.id)"><img src="images/elasticsearch.svg"></button>
+        <button id="kibana"        style="--clr:#ffffff;" onclick="sendMessage(this.id)"><img src="images/kibana.svg"></button>
+        <button id="aws1"          style="--clr:#ffffff;" onclick="sendMessage(this.id)"><img src="images/aws1.svg"></button>
+        <button id="aws2"          style="--clr:#ffffff;" onclick="sendMessage(this.id)"><img src="images/aws2.svg"></button>
       </div>
     </div>
   </section>
-  <script src="script.js"></script>
+  <script src="script.js?d=1"></script>
 </body>
 </html>

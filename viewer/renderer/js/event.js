@@ -1,5 +1,5 @@
 const button = document.getElementById('createBtn')
-const url = document.querySelector('.url')
+const url = document.querySelector('.box .card p')
 
 document.addEventListener('DOMContentLoaded', async (e) => {
   // const endpoint = 'http://127.0.0.1:5500/client/index.html'
