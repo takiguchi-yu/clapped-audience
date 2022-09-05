@@ -3,6 +3,7 @@ import { CfnOutput, RemovalPolicy } from 'aws-cdk-lib';
 import { AllowedMethods, Distribution, OriginAccessIdentity, PriceClass, ViewerProtocolPolicy, SecurityPolicyProtocol } from 'aws-cdk-lib/aws-cloudfront'
 import { S3Origin } from 'aws-cdk-lib/aws-cloudfront-origins';
 import { Bucket, BlockPublicAccess } from 'aws-cdk-lib/aws-s3';
+import * as s3deploy from 'aws-cdk-lib/aws-s3-deployment';
 import { Construct } from 'constructs';
 
 export class StaticSiteStack extends cdk.Stack {
@@ -14,7 +15,7 @@ export class StaticSiteStack extends cdk.Stack {
 
     // S3 バケット
     const siteBucket = new Bucket(this, 'SiteBucket', {
-      bucketName: 'clapped-audience',
+      bucketName: 'clapped-audience2',
       publicReadAccess: false,
       blockPublicAccess: BlockPublicAccess.BLOCK_ALL,
       // CDK 上で完全にクリーンできるようにするための設定（本番環境非推奨）
@@ -40,5 +41,12 @@ export class StaticSiteStack extends cdk.Stack {
 
     new CfnOutput(this, 'DistributionId', { value: distribution.distributionId });
 
+    // Deploy site contents to S3 bucket
+    new s3deploy.BucketDeployment(this, 'DeployWithInvalidation', {
+      sources: [s3deploy.Source.asset('../client')],
+      destinationBucket: siteBucket,
+      distribution,
+      distributionPaths: ['/*'],
+    });
   }
 }

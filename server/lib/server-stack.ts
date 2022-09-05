@@ -27,9 +27,24 @@ export class ServerStack extends cdk.Stack {
         name: "connectionId",
         type: AttributeType.STRING,
       },
-      readCapacity: 1,
-      writeCapacity: 1,
+      // readCapacity: 5,
+      // writeCapacity: 5,
       removalPolicy: RemovalPolicy.DESTROY, // DESTROY: テーブルにデータが入っている状態でcdk destroyが実行された時、データごとテーブルを削除する
+    });
+
+    // 読み込みキャパシティー
+    table.autoScaleReadCapacity({
+      minCapacity: 1,
+      maxCapacity: 10,
+    }).scaleOnUtilization({
+      targetUtilizationPercent: 70,
+    });
+    // 書き込みキャパシティー
+    table.autoScaleWriteCapacity({
+      minCapacity: 1,
+      maxCapacity: 10,
+    }).scaleOnUtilization({
+      targetUtilizationPercent: 70,
     });
 
     // add global secandary index (GSI)
@@ -39,9 +54,24 @@ export class ServerStack extends cdk.Stack {
         name: "eventCode",
         type: AttributeType.STRING,
       },
-      readCapacity: 1,
-      writeCapacity: 1,
+      // readCapacity: 5,
+      // writeCapacity: 5,
       projectionType: ProjectionType.ALL,
+    });
+
+    // GSI読み込みキャパシティー
+    table.autoScaleGlobalSecondaryIndexReadCapacity('eventCodeIndex', {
+      minCapacity: 1,
+      maxCapacity: 10,
+    }).scaleOnUtilization({
+      targetUtilizationPercent: 70,
+    });
+    // GSI書き込みキャパシティー
+    table.autoScaleGlobalSecondaryIndexWriteCapacity('eventCodeIndex', {
+      minCapacity: 1,
+      maxCapacity: 10,
+    }).scaleOnUtilization({
+      targetUtilizationPercent: 70,
     });
 
     const connectFunc = new Function(this, 'connect-lambda', {

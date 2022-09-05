@@ -1,4 +1,4 @@
-const endpoint = 'wss://fyo5gy2ev5.execute-api.ap-northeast-1.amazonaws.com/dev'
+const endpoint = 'wss://0wumxnt787.execute-api.ap-northeast-1.amazonaws.com/dev'
 
 // 指数バックオフ設定値
 let initialReconnectDelay = 1000;

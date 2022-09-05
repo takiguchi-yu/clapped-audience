@@ -1,4 +1,4 @@
-const endpoint = 'wss://fyo5gy2ev5.execute-api.ap-northeast-1.amazonaws.com/dev'
+const endpoint = 'wss://0wumxnt787.execute-api.ap-northeast-1.amazonaws.com/dev'
 
 const queryString = new URLSearchParams(location.search);
 const eventCode = queryString.get('eventCode')
