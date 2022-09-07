@@ -71,7 +71,7 @@ let maxReconnectDelay = 16000;
   function reconnectToWebsocket() {
     if(currentReconnectDelay < maxReconnectDelay) {
       currentReconnectDelay*=2;
-      s(" RECONNECTION...");
+      console.log(" RECONNECTION...");
       wsConnection(endpoint, eventCode);
     }
   }
