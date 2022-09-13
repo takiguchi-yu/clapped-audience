@@ -1,5 +1,7 @@
 const endpoint = 'wss://0wumxnt787.execute-api.ap-northeast-1.amazonaws.com/dev'
 
+let ws; // WebSocket
+
 // 指数バックオフ設定値
 let initialReconnectDelay = 1000;
 let currentReconnectDelay = initialReconnectDelay;
@@ -17,7 +19,7 @@ let maxReconnectDelay = 16000;
     reaction.style.position = 'absolute';
     reaction.style.top = posY + 'px';
     reaction.style.left = posX + 'px';
-    reaction.style.width = 100 + size + 'px';
+    reaction.style.width = 50 + size + 'px';
     // reaction.src = JSON.parse(e.data).imagePath;
     // reaction.src = e.data;
     reaction.src = message;
@@ -40,7 +42,7 @@ let maxReconnectDelay = 16000;
   };
   
   function wsConnection(endpoint, eventCode) {
-    let ws = new WebSocket(`${endpoint}?eventCode=${eventCode}`);
+    ws = new WebSocket(`${endpoint}?eventCode=${eventCode}`);
     let s = (l) => console.log(l);
   
     // コネクション確立
@@ -61,21 +63,31 @@ let maxReconnectDelay = 16000;
     // コネクションクローズ (クローズしたら再接続)
     ws.onclose = e => {
       s(" CONNECTION CLOSED");
-      
+
+      if (e.code === 1000) return;  // 任意のイベントコード経由の場合、再接続せずにクローズ
+
       setTimeout((function() {
         reconnectToWebsocket()
       }).bind(this), currentReconnectDelay + Math.floor(Math.random() * 3000))  // ランダム指数バックオフ
     }
-  }
 
-  function reconnectToWebsocket() {
-    if(currentReconnectDelay < maxReconnectDelay) {
-      currentReconnectDelay*=2;
-      console.log(" RECONNECTION...");
-      wsConnection(endpoint, eventCode);
+    reconnectToWebsocket = () => {
+      if(currentReconnectDelay < maxReconnectDelay) {
+        currentReconnectDelay*=2;
+        s(" RECONNECTION...");
+        wsConnection(endpoint, eventCode);
+      }
     }
   }
 
   const eventCode = await window.electronAPI.eventCode()
-  wsConnection(endpoint, eventCode);  
+  wsConnection(endpoint, eventCode);
+
+  // 任意のイベントコードを設定
+  window.electronAPI.onUpdateEventCode((_event, eventCode) => {
+    ws.close(1000, 'New EventCode issued')
+    wsConnection(endpoint, eventCode);
+  })
 })()
+
+

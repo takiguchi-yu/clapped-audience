@@ -120,8 +120,13 @@ ipcMain.handle('wan', (event, data) => {
   return(`${data}わん🐶`)
 })
 
-const eventCode = uuidv4()
-ipcMain.handle('eventCode', () => {
+let eventCode = uuidv4()
+ipcMain.handle('eventCode', (event, data) => {
+  // 任意のイベントコードを設定する場合
+  if (data) {
+    eventCode = data
+    reactionWindow.webContents.send('update-eventCode', eventCode)
+  }
   return eventCode
 })
 

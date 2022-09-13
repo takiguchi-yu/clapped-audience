@@ -34,7 +34,7 @@ function wsConnection(endpoint, eventCode) {
     }).bind(this), currentReconnectDelay + Math.floor(Math.random() * 3000))  // ランダム指数バックオフ
   }
 
-  function reconnectToWebsocket() {
+  reconnectToWebsocket = () => {
     if(currentReconnectDelay < maxReconnectDelay) {
       currentReconnectDelay*=2;
       s(" RECONNECTION...");
