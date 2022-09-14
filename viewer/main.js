@@ -1,5 +1,5 @@
 // アプリケーションの寿命の制御と、ネイティブなブラウザウインドウを作成するモジュール
-const { app, BrowserWindow, Tray, Menu, nativeImage, ipcMain } = require('electron')
+const { app, BrowserWindow, Tray, Menu, screen, ipcMain } = require('electron')
 const path = require('path')
 const { v4: uuidv4 } = require('uuid')
 const isWin = process.platform === 'win32'
@@ -27,8 +27,6 @@ if (env === 'development') {
 app.dock.hide() // Dockアイコンを非表示（MacOSのみ）
 
 let eventWindow     // イベント設定画面
-let reactionWindow  // リアクション表示画面
-
 function createEventWindow() {
 
   // レンダラープロセス(画面)の多重起動防止
@@ -51,6 +49,7 @@ function createEventWindow() {
   eventWindow.loadFile('./renderer/event.html')
 }
 
+let reactionWindow  // リアクション表示画面
 function createReactionWindow () {
   reactionWindow = new BrowserWindow({
     webPreferences: {
@@ -68,6 +67,13 @@ function createReactionWindow () {
   reactionWindow.loadFile('./renderer/reaction.html')
 }
 
+function setScreenHight(ratio) {
+  let workAreaSize = screen.getPrimaryDisplay().workAreaSize;
+  height = Math.floor(workAreaSize.height * ratio)
+  y = workAreaSize.height - height
+  reactionWindow.setBounds({ x: 0, y: y, width: workAreaSize.width, height: height })
+}
+
 let tray = null
 function createTaskBar () {
   // const icon = nativeImage.createFromPath('./icon.png'); // なぜかこの書き方だとアイコンが表示されない
@@ -75,7 +81,16 @@ function createTaskBar () {
   tray = new Tray(icon);
 
   const contextMenu = Menu.buildFromTemplate([
-    { label: "設定...", click: function () { createEventWindow(); } },
+    { label: '設定...', click: function() { createEventWindow() }},
+    {
+      label: '描画領域',
+      submenu: [
+        { label: '100%', type: 'radio', checked: true, click: function() { reactionWindow.maximize() } },
+        { label: '70%', type: 'radio', click: function() { setScreenHight(0.7) } },
+        { label: '50%', type: 'radio', click: function() { setScreenHight(0.5) } },
+        { label: '30%', type: 'radio', click: function() { setScreenHight(0.3) } },
+      ]
+    },
     { type: 'separator' },
     { label: "終了する", click: function () { app.quit(); } },
   ]);
