@@ -81,6 +81,7 @@ function createTaskBar () {
   // const icon = nativeImage.createFromPath('./icon.png'); // なぜかこの書き方だとアイコンが表示されない
   const icon = isWin ? __dirname + '/assets/tray_icon.ico' : __dirname + '/assets/tray_icon.png';
   tray = new Tray(icon);
+  tray.setToolTip(app.name)
 
   const contextMenu = Menu.buildFromTemplate([
     { label: '設定...', click: function() { createEventWindow() }},
