@@ -24,7 +24,9 @@ if (env === 'development') {
   } catch (_) { console.log('Error'); }
 }
 
-app.dock.hide() // Dockアイコンを非表示（MacOSのみ）
+if(!isWin) {
+  app.dock.hide() // Dockアイコンを非表示（MacOSのみ）
+}
 
 let eventWindow     // イベント設定画面
 function createEventWindow() {
