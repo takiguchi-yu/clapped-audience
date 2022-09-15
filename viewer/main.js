@@ -64,7 +64,8 @@ function createReactionWindow () {
   reactionWindow.setAlwaysOnTop(true, "screen-saver")  // 最前面表示
   reactionWindow.setVisibleOnAllWorkspaces(true)  // すべてのワークスペース（デスクトップ）で表示（MacOSのみ）
   reactionWindow.setIgnoreMouseEvents(true)  // マウスイベントを無効化
-  reactionWindow.maximize()  // ウインドウサイズを最大化
+  // reactionWindow.maximize()  // ウインドウサイズを最大化
+  setScreenHight(0.5) // 50%表示
   // reactionWindow.webContents.openDevTools() // デベロッパーツール
   reactionWindow.loadFile('./renderer/reaction.html')
 }
@@ -88,9 +89,9 @@ function createTaskBar () {
     {
       label: '描画領域',
       submenu: [
-        { label: '100%', type: 'radio', checked: true, click: function() { reactionWindow.maximize() } },
+        { label: '100%',type: 'radio', click: function() { reactionWindow.maximize() } },
         { label: '70%', type: 'radio', click: function() { setScreenHight(0.7) } },
-        { label: '50%', type: 'radio', click: function() { setScreenHight(0.5) } },
+        { label: '50%', type: 'radio', checked: true, click: function() { setScreenHight(0.5) } },
         { label: '30%', type: 'radio', click: function() { setScreenHight(0.3) } },
       ]
     },
