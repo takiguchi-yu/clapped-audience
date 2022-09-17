@@ -1,6 +1,7 @@
-# S3の静的ウェブホスティング環境を構築するだけの CDK 
+# S3の静的ウェブホスティング環境を構築
 
 Cloudfront + OAI + S3 の構成
+環境構築＋clientディレクトリのデプロイを実施
 
 ## Welcome to your CDK TypeScript project
 
@@ -16,3 +17,10 @@ The `cdk.json` file tells the CDK Toolkit how to execute your app.
 * `cdk deploy`      deploy this stack to your default AWS account/region
 * `cdk diff`        compare deployed stack with current state
 * `cdk synth`       emits the synthesized CloudFormation template
+
+
+よく使うデプロイコマンド
+
+```
+cdk deploy --require-approval never --profile {YOUR-PROFILE} --hotswap
+```

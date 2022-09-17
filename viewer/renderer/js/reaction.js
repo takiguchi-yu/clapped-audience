@@ -14,12 +14,13 @@ let maxReconnectDelay = 16000;
     const reaction = document.createElement('img');
     const posY = Math.floor(Math.random() * window.innerHeight);
     const posX = Math.floor(Math.random() * window.innerWidth);
-    const size = Math.floor(Math.random() * 250);
+    const size = Math.floor(Math.random() * 220);
   
     reaction.style.position = 'absolute';
     reaction.style.top = posY + 'px';
     reaction.style.left = posX + 'px';
-    reaction.style.width = 50 + size + 'px';
+    // reaction.style.width = size + 'px';
+    reaction.style.width = 50 + size + 'px'; // ランダム値のみだと小さすぎる数値の場合に見えないので、最低サイズをプラスする
     // reaction.src = JSON.parse(e.data).imagePath;
     // reaction.src = e.data;
     reaction.src = message;
