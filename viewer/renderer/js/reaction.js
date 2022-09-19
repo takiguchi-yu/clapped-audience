@@ -25,17 +25,20 @@ let maxReconnectDelay = 16000;
     // reaction.src = e.data;
     reaction.src = message;
     reaction.className = 'item';
-    const reactioAnimation = reaction.animate(
+    const reactionAnimation = reaction.animate(
       [
-        { top: posY + 'px' },
+        { top: posY + 'px', },
         { top: '0px', opacity: 0 }
+        // { top: posY + 'px', transform: 'rotate(5deg)' },
+        // { top: '0px', transform: 'rotate(-5deg)', opacity: 0 }
       ],
       {
         duration: 2500,
-        easing: 'ease-in'
+        easing: 'ease-in',
+        // iterations: Infinity,
       }
     )
-    reactioAnimation.onfinish = () => {
+    reactionAnimation.onfinish = () => {
       reaction.remove();
     }
   
@@ -54,8 +57,21 @@ let maxReconnectDelay = 16000;
   
     // メッセージ受信
     ws.onmessage = m => {
-      // s(" RECEIVED: " + JSON.stringify(m.data, null, 3))
-      received(m.data)
+      s(" RECEIVED: " + JSON.stringify(m.data, null, 3))
+      const message = m.data.split(',')
+      if (message[0] === 'text') {
+        const params = {
+          message: message[1],
+          position: message[2],
+          duration: message[3],
+          color: message[4],
+          fontSize: message[5],
+          fontWeight: message[6],
+        }
+        createText(params)
+      } else {
+        received(m.data)
+      }
     }
   
     // コネクションエラー
@@ -91,4 +107,45 @@ let maxReconnectDelay = 16000;
   })
 })()
 
+/**
+ * パラメータ例： { "action": "sendmessage", "data": "text,運営からのお知らせ：残り5分です,fixed,12000,red,64px,700", "eventCode": "test" }
+ */
+function createText({ message = '', position = 'random', duration = 10000, color = 'black', fontSize = '32px', fontWeight = 500 }) {
+  console.log(position);
+  const body = document.querySelector('body');
+  let spanText = document.createElement('span');
+  spanText.className = 'text'
+  spanText.style.position = 'absolute'
+  if (position === 'fixed') {
+    spanText.style.top = '30px';
+  } else {
+    let random = Math.round( Math.random()*document.documentElement.clientHeight );
+    spanText.style.top = random + 'px';
+  }
+  spanText.style.left = (document.documentElement.clientWidth) + 'px';
+  spanText.style.whiteSpace = 'nowrap'
+  spanText.style.color = color
+  spanText.style.fontWeight = fontWeight
+  spanText.style.fontSize = fontSize
 
+  // 文字幅を計算するために canvas を作成
+	let canvas = document.createElement('canvas');
+	let context = canvas.getContext('2d');
+  // context.font = '900 64px \'Noto Sans\', sans-serif';
+  context.font = fontWeight + ' ' +  fontSize + ' \'Noto Sans\', sans-serif';
+	let metrics = context.measureText(message);
+	let width = metrics.width
+
+  const textAnimation = spanText.animate(
+    [
+      { left: '-' + width + 'px'},
+    ],
+    { duration: parseInt(duration) }
+  )
+  textAnimation.onfinish = () => {
+    spanText.remove();
+  }
+  spanText.appendChild(document.createTextNode(message));
+  body.appendChild(canvas);
+  body.appendChild(spanText);
+}

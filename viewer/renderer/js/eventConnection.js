@@ -1,3 +1,5 @@
+document.getElementById('eventCode').focus()
+
 function eventConnection() {
   const eventCode = document.getElementById('eventCode').value
   window.electronAPI.eventCode(eventCode);
