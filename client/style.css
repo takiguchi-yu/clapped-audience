@@ -6,6 +6,11 @@
   transition: all 0.1s;
 }
 
+html
+{
+  touch-action: manipulation; /* スマホで連打するための設定 */
+}
+
 section
 {
   position: relative;

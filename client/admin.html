@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>拍手喝采運営画面</title>
+  <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+  <link rel="stylesheet" href="admin.css">
+</head>
+<body>
+  <div class="wrapper">
+    <div class="title-text">
+      <div class="title">運営向け画面</div>
+    </div>
+    <div class="form-container">
+      <div class="form-inner">
+        <form action="#" class="form-admin">
+          <div class="field">
+            <p>メッセージタイプを選択してください:</p>
+            <input type="radio" name="messagetype" id="text" checked>
+            <label for="text">テキスト</label>
+            <input type="radio" name="messagetype" id="img" disabled>
+            <label for="img">画像URL(現在無効)</label>
+          </div>
+          <div class="field">
+            <p>メッセージを入力してください:</p>
+            <input type="text" id="message" placeholder="メッセージ" value="運営からのお知らせ: 残り３分です">
+          </div>
+          <div class="field">
+            <p>表示位置を選択してください:</p>
+            <input type="radio" name="position" id="fixed" value="fixed" checked>
+            <label for="fixed">固定</label>
+            <input type="radio" name="position" id="random" value="random">
+            <label for="random">ランダム</label>
+          </div>
+          <div class="field">
+            <p>表示時間(ミリ秒)を入力してください:</p>
+            <input type="text" id="duration" placeholder="12000" value="12000">
+          </div>
+          <div class="field">
+            <p>フォントカラーを入力してください:</p>
+            <input type="text" id="fontColor" placeholder="red" value="red">
+          </div>
+          <div class="field">
+            <p>フォントサイズを入力してください:</p>
+            <input type="text" id="fontSize" placeholder="64px" value="64px">
+          </div>
+          <div class="field">
+            <p>フォント太さを入力してください(500-700):</p>
+            <input type="text" id="fontWeight" placeholder="700" value="700">
+          </div>
+          <div class="field">
+            <p>送信タイミング(分後)(現在無効):</p>
+            <input type="text" id="timing" placeholder="0" value="0" disabled>
+          </div>
+          <div class="field">
+            <input id="adminBtn" type="button" value="送信">
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- プレビュー -->
+    <div class="preview">
+
+    </div>
+  </div>
+  <script src="script.js"></script>
+  <script src="admin.js"></script>
+</body>
+</html>
