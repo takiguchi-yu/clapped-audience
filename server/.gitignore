@@ -1,4 +1,5 @@
 *.js
+!src/**
 !onconnect/app.js
 !ondisconnect/app.js
 !sendmessage/app.js
