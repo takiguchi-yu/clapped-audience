@@ -51,30 +51,18 @@ function createEventWindow() {
   eventWindow.loadFile('./renderer/event.html')
 }
 
-let reactionWindow  // リアクション表示画面
-function createReactionWindow () {
-  reactionWindow = new BrowserWindow({
-    webPreferences: {
-      preload: path.join(__dirname, 'preload.js')
-    },
-    transparent: true,  // 透明化
-    frame: false,
-    hasShadow: false,
-  })
-  reactionWindow.setAlwaysOnTop(true, "screen-saver")  // 最前面表示
-  reactionWindow.setVisibleOnAllWorkspaces(true)  // すべてのワークスペース（デスクトップ）で表示（MacOSのみ）
-  reactionWindow.setIgnoreMouseEvents(true)  // マウスイベントを無効化
-  reactionWindow.maximize()  // ウインドウサイズを最大化
-  // setScreenHight(0.5) // 50%表示
-  // reactionWindow.webContents.openDevTools() // デベロッパーツール
-  reactionWindow.loadFile('./renderer/reaction.html')
-}
-
+// ディスプレイサイズで再計算 (ウインドウサイズではない)
 function setScreenHight(ratio) {
-  let workAreaSize = screen.getPrimaryDisplay().workAreaSize;
-  height = Math.floor(workAreaSize.height * ratio)
-  y = workAreaSize.height - height
-  reactionWindow.setBounds({ x: 0, y: y, width: workAreaSize.width, height: height })
+  reactionWindows.forEach(window => {
+    let externalDisplay = screen.getAllDisplays().filter(display => {
+      return display.workArea.x == window.getBounds().x
+    })
+    h2 = Math.floor(externalDisplay[0].workArea.height * ratio)
+    x2 = externalDisplay[0].workArea.x
+    y2 = externalDisplay[0].workArea.height - h2 + externalDisplay[0].workArea.y
+    w2 = externalDisplay[0].workArea.width
+    window.setBounds({ x: x2, y: y2 , width: w2, height: h2 })
+  })
 }
 
 let tray = null
@@ -89,7 +77,7 @@ function createTaskBar () {
     {
       label: '描画領域',
       submenu: [
-        { label: '100%',type: 'radio', checked: true, click: function() { reactionWindow.maximize() } },
+        { label: '100%',type: 'radio', checked: true, click: function() { setScreenHight(1.0) } },
         { label: '70%', type: 'radio', click: function() { setScreenHight(0.7) } },
         { label: '50%', type: 'radio', click: function() { setScreenHight(0.5) } },
         { label: '30%', type: 'radio', click: function() { setScreenHight(0.3) } },
@@ -102,6 +90,33 @@ function createTaskBar () {
   tray.setContextMenu(contextMenu);
 }
 
+let reactionWindows = []    // リアクションウインドウ's (複数モニターに対応)
+function createReactionAllWindow() {
+  const reactionDisplays = screen.getAllDisplays()
+  reactionDisplays.forEach(display => {
+    if (display.bounds.x !== 0 || display.y !== 0) {
+      let win = new BrowserWindow({
+        x: display.workArea.x,
+        y: display.workArea.y,
+        width: display.workArea.width,
+        height: display.workArea.height,
+        webPreferences: {
+          preload: path.join(__dirname, 'preload.js')
+        },
+        transparent: true,  // 透明化
+        frame: false,
+        hasShadow: false,
+      })
+      win.setAlwaysOnTop(true, "screen-saver")  // 最前面表示
+      win.setVisibleOnAllWorkspaces(true)  // すべてのワークスペース（デスクトップ）で表示（MacOSのみ）
+      win.setIgnoreMouseEvents(true)  // マウスイベントを無効化
+      win.loadFile('./renderer/reaction.html')
+      // win.loadURL('https://github.com')
+      reactionWindows.push(win)
+    }
+  })
+}
+
 // このメソッドは、Electron の初期化が完了し、
 // ブラウザウインドウの作成準備ができたときに呼ばれます。
 // 一部のAPIはこのイベントが発生した後にのみ利用できます。
@@ -109,9 +124,11 @@ app.whenReady().then(() => {
   // イベント設定画面を作成
   createEventWindow()
   // リアクション画面を作成
-  createReactionWindow()
+  // createReactionWindow()
   // タスクバーを作成
   createTaskBar()
+  // 別モニターにもリアクション画面を作成
+  createReactionAllWindow()
 
   app.on('activate', function () {
     // macOS では、Dock アイコンのクリック時に他に開いているウインドウがない
@@ -130,22 +147,14 @@ app.on('window-all-closed', function () {
 //----------------------------------------
 // IPC通信
 //----------------------------------------
-// 語尾に "にゃん" を付けて返す
-ipcMain.handle('nyan', (event, data) => {
-  return(`${data}にゃん🐱`)
-})
-
-// 語尾に "わん" を付けて返す
-ipcMain.handle('wan', (event, data) => {
-  return(`${data}わん🐶`)
-})
-
 let eventCode = uuidv4()
 ipcMain.handle('eventCode', (event, data) => {
   // 任意のイベントコードを設定する場合
   if (data) {
     eventCode = data
-    reactionWindow.webContents.send('update-eventCode', eventCode)
+    reactionWindows.forEach(window => {
+      window.webContents.send('update-eventCode', eventCode)
+    })
   }
   return eventCode
 })
