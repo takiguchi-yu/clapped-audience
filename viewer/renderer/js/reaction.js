@@ -57,7 +57,7 @@ let maxReconnectDelay = 16000;
   
     // メッセージ受信
     ws.onmessage = m => {
-      s(" RECEIVED: " + JSON.stringify(m.data, null, 3))
+      // s(" RECEIVED: " + JSON.stringify(m.data, null, 3))
       const message = m.data.split(',')
       if (message[0] === 'text') {
         const params = {

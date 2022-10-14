@@ -3,25 +3,35 @@ const { app, BrowserWindow, Tray, Menu, screen, ipcMain } = require('electron')
 const path = require('path')
 const { v4: uuidv4 } = require('uuid')
 const isWin = process.platform === 'win32'
-
-console.log("application version : ", app.getVersion())
+const env = process.env.NODE_ENV || ''
+const log = require('electron-log')
+// log.transports.file.resolvePath = () => path.join(__dirname, 'logs/main.log');
+switch (env) {
+  case 'development':
+    try {
+      // ホットリロード
+      require('electron-reloader')(module, {
+        debug: false,
+        watchRenderer: true
+      });
+      log.transports.file.level = 'debug';
+      log.transports.console.level = 'debug';
+  
+    } catch (_) { log.error('Error'); }
+    break;
+  default:
+    log.transports.file.level = false;
+    log.transports.console.level = false;
+    break;
+}
+log.debug("process.env.NODE_ENV : ", env)
+log.debug("application version : ", app.getVersion())
 
 // メインプロセス(Nodejs)の多重起動防止
 const gotTheLock = app.requestSingleInstanceLock()
 if(!gotTheLock){
-  console.log('メインプロセスが多重起動しました。終了します。')
+  log.debug('メインプロセスが多重起動しました。終了します。')
   app.quit();
-}
-
-const env = process.env.NODE_ENV || 'development'
-if (env === 'development') {
-  try {
-    // ホットリロード
-    require('electron-reloader')(module, {
-          debug: false,
-          watchRenderer: true
-      });
-  } catch (_) { console.log('Error'); }
 }
 
 if(!isWin) {
@@ -61,6 +71,8 @@ function setScreenHight(ratio) {
     x2 = externalDisplay[0].workArea.x
     y2 = externalDisplay[0].workArea.height - h2 + externalDisplay[0].workArea.y
     w2 = externalDisplay[0].workArea.width
+    log.debug("ウインドウサイズ再計算(", ratio*100, "%) : ", externalDisplay)
+    log.debug("ウインドウサイズ再計算(", ratio*100, "%) : ", { x: x2, y: y2 , width: w2, height: h2 })
     window.setBounds({ x: x2, y: y2 , width: w2, height: h2 })
   })
 }
@@ -93,6 +105,7 @@ function createTaskBar () {
 let reactionWindows = []    // リアクションウインドウ's (複数モニターに対応)
 function createReactionAllWindow() {
   const reactionDisplays = screen.getAllDisplays()
+  log.debug("ディスプレイ情報 : ", reactionDisplays)
   reactionDisplays.forEach(display => {
     if (display.bounds.x !== 0 || display.y !== 0) {
       let win = new BrowserWindow({
@@ -149,6 +162,8 @@ app.on('window-all-closed', function () {
 //----------------------------------------
 let eventCode = uuidv4()
 ipcMain.handle('eventCode', (event, data) => {
+  log.debug("変更前のeventCode : ", eventCode)
+  log.debug("変更後のeventCode : ", data)
   // 任意のイベントコードを設定する場合
   if (data) {
     eventCode = data
