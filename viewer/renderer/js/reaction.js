@@ -67,6 +67,7 @@ let maxReconnectDelay = 16000;
           color: message[4],
           fontSize: message[5],
           fontWeight: message[6],
+          opacity: message[7],
         }
         createText(params)
       } else {
@@ -110,8 +111,7 @@ let maxReconnectDelay = 16000;
 /**
  * パラメータ例： { "action": "sendmessage", "data": "text,運営からのお知らせ：残り5分です,fixed,12000,red,64px,700", "eventCode": "test" }
  */
-function createText({ message = '', position = 'random', duration = 10000, color = 'black', fontSize = '32px', fontWeight = 500 }) {
-  console.log(position);
+function createText({ message = '', position = 'random', duration = 10000, color = 'black', fontSize = '32px', fontWeight = 500, opacity = 0.8 }) {
   const body = document.querySelector('body');
   let spanText = document.createElement('span');
   spanText.className = 'text'
@@ -125,6 +125,8 @@ function createText({ message = '', position = 'random', duration = 10000, color
   spanText.style.left = (document.documentElement.clientWidth) + 'px';
   spanText.style.whiteSpace = 'nowrap'
   spanText.style.color = color
+  spanText.style.opacity = opacity
+  spanText.style.webkitTextStroke = '1px black'
   spanText.style.fontWeight = fontWeight
   spanText.style.fontSize = fontSize
 
@@ -144,6 +146,7 @@ function createText({ message = '', position = 'random', duration = 10000, color
   )
   textAnimation.onfinish = () => {
     spanText.remove();
+    canvas.remove();
   }
   spanText.appendChild(document.createTextNode(message));
   body.appendChild(canvas);

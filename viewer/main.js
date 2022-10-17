@@ -3,27 +3,23 @@ const { app, BrowserWindow, Tray, Menu, screen, ipcMain } = require('electron')
 const path = require('path')
 const { v4: uuidv4 } = require('uuid')
 const isWin = process.platform === 'win32'
-const env = process.env.NODE_ENV || ''
+const env = process.env.NODE_ENV || 'development'
 const log = require('electron-log')
+log.transports.file.level = false;
+log.transports.console.level = 'debug';
 // log.transports.file.resolvePath = () => path.join(__dirname, 'logs/main.log');
-switch (env) {
-  case 'development':
-    try {
-      // ホットリロード
-      require('electron-reloader')(module, {
-        debug: false,
-        watchRenderer: true
-      });
-      log.transports.file.level = 'debug';
-      log.transports.console.level = 'debug';
-  
-    } catch (_) { log.error('Error'); }
-    break;
-  default:
+
+if (env === 'development') {
+  try {
+    // ホットリロード
+    require('electron-reloader')(module, {
+      debug: false,
+      watchRenderer: true
+    });
     log.transports.file.level = false;
-    log.transports.console.level = false;
-    break;
+  } catch (_) { log.error('Error'); }
 }
+
 log.debug("process.env.NODE_ENV : ", env)
 log.debug("application version : ", app.getVersion())
 
@@ -63,18 +59,23 @@ function createEventWindow() {
 
 // ディスプレイサイズで再計算 (ウインドウサイズではない)
 function setScreenHight(ratio) {
-  reactionWindows.forEach(window => {
-    let externalDisplay = screen.getAllDisplays().filter(display => {
-      return display.workArea.x == window.getBounds().x
+  try {
+    reactionWindows.forEach(window => {
+      let externalDisplay = screen.getAllDisplays().filter(display => {
+        return display.workArea.x == window.getBounds().x
+      })
+      h2 = Math.floor(externalDisplay[0].workArea.height * ratio)
+      x2 = externalDisplay[0].workArea.x
+      y2 = externalDisplay[0].workArea.height - h2 + externalDisplay[0].workArea.y
+      w2 = externalDisplay[0].workArea.width
+      log.debug("変更対象のディスプレイworkArea   : ", externalDisplay[0].workArea)
+      log.debug("現在のウインドウworkArea         : ", window.getBounds())
+      log.debug("変更後のウインドウworkArea(", ratio*100, "%) : ", { x: x2, y: y2 , width: w2, height: h2 })
+      window.setBounds({ x: x2, y: y2 , width: w2, height: h2 })
     })
-    h2 = Math.floor(externalDisplay[0].workArea.height * ratio)
-    x2 = externalDisplay[0].workArea.x
-    y2 = externalDisplay[0].workArea.height - h2 + externalDisplay[0].workArea.y
-    w2 = externalDisplay[0].workArea.width
-    log.debug("ウインドウサイズ再計算(", ratio*100, "%) : ", externalDisplay)
-    log.debug("ウインドウサイズ再計算(", ratio*100, "%) : ", { x: x2, y: y2 , width: w2, height: h2 })
-    window.setBounds({ x: x2, y: y2 , width: w2, height: h2 })
-  })
+  } catch (error) {
+    log.error(error)
+  }
 }
 
 let tray = null
@@ -97,6 +98,8 @@ function createTaskBar () {
       ]
     },
     { type: 'separator' },
+    { label: 'ログ出力する', type: 'checkbox', checked: false, click: function(item) { enableLogging(item.checked) }},
+    { type: 'separator' },
     { label: "終了する", click: function () { app.quit(); } },
   ]);
   tray.setContextMenu(contextMenu);
@@ -105,7 +108,7 @@ function createTaskBar () {
 let reactionWindows = []    // リアクションウインドウ's (複数モニターに対応)
 function createReactionAllWindow() {
   const reactionDisplays = screen.getAllDisplays()
-  log.debug("ディスプレイ情報 : ", reactionDisplays)
+  log.debug("すべてのディスプレイ情報 : ", reactionDisplays)
   reactionDisplays.forEach(display => {
     if (display.bounds.x !== 0 || display.y !== 0) {
       let win = new BrowserWindow({
@@ -128,6 +131,17 @@ function createReactionAllWindow() {
       reactionWindows.push(win)
     }
   })
+}
+
+// ログ出力を on/off する
+function enableLogging(checked) {
+  if (checked) {
+    log.transports.file.level = 'debug';
+    log.debug('ログ出力 ON')
+  } else {
+    log.debug('ログ出力 OFF')
+    log.transports.file.level = false;
+  }
 }
 
 // このメソッドは、Electron の初期化が完了し、
@@ -162,10 +176,10 @@ app.on('window-all-closed', function () {
 //----------------------------------------
 let eventCode = uuidv4()
 ipcMain.handle('eventCode', (event, data) => {
-  log.debug("変更前のeventCode : ", eventCode)
-  log.debug("変更後のeventCode : ", data)
+  log.debug("現在のeventCode   : ", eventCode)
   // 任意のイベントコードを設定する場合
   if (data) {
+    log.debug("変更後のeventCode : ", data)
     eventCode = data
     reactionWindows.forEach(window => {
       window.webContents.send('update-eventCode', eventCode)
