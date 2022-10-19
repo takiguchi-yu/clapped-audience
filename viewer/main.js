@@ -16,7 +16,6 @@ if (env === 'development') {
       debug: false,
       watchRenderer: true
     });
-    log.transports.file.level = false;
   } catch (_) { log.error('Error'); }
 }
 
@@ -57,27 +56,6 @@ function createEventWindow() {
   eventWindow.loadFile('./renderer/event.html')
 }
 
-// ディスプレイサイズで再計算 (ウインドウサイズではない)
-function setScreenHight(ratio) {
-  try {
-    reactionWindows.forEach(window => {
-      let externalDisplay = screen.getAllDisplays().filter(display => {
-        return display.workArea.x == window.getBounds().x
-      })
-      h2 = Math.floor(externalDisplay[0].workArea.height * ratio)
-      x2 = externalDisplay[0].workArea.x
-      y2 = externalDisplay[0].workArea.height - h2 + externalDisplay[0].workArea.y
-      w2 = externalDisplay[0].workArea.width
-      log.debug("変更対象のディスプレイworkArea   : ", externalDisplay[0].workArea)
-      log.debug("現在のウインドウworkArea         : ", window.getBounds())
-      log.debug("変更後のウインドウworkArea(", ratio*100, "%) : ", { x: x2, y: y2 , width: w2, height: h2 })
-      window.setBounds({ x: x2, y: y2 , width: w2, height: h2 })
-    })
-  } catch (error) {
-    log.error(error)
-  }
-}
-
 let tray = null
 function createTaskBar () {
   // const icon = nativeImage.createFromPath('./icon.png'); // なぜかこの書き方だとアイコンが表示されない
@@ -90,11 +68,11 @@ function createTaskBar () {
     {
       label: '描画領域',
       submenu: [
-        { label: '100%',type: 'radio', checked: true, click: function() { setScreenHight(1.0) } },
-        { label: '70%', type: 'radio', click: function() { setScreenHight(0.7) } },
-        { label: '50%', type: 'radio', click: function() { setScreenHight(0.5) } },
-        { label: '30%', type: 'radio', click: function() { setScreenHight(0.3) } },
-        { label: 'ほぼミュート', type: 'radio', click: function() { setScreenHight(0.01) } },
+        { label: '100%',type: 'radio', checked: true, click: function() { createReactionAllWindow(1.0) } },
+        { label: '70%', type: 'radio', click: function() { createReactionAllWindow(0.7) } },
+        { label: '50%', type: 'radio', click: function() { createReactionAllWindow(0.5) } },
+        { label: '30%', type: 'radio', click: function() { createReactionAllWindow(0.3) } },
+        { label: 'ほぼミュート', type: 'radio', click: function() { createReactionAllWindow(0.01) } },
       ]
     },
     { type: 'separator' },
@@ -105,17 +83,32 @@ function createTaskBar () {
   tray.setContextMenu(contextMenu);
 }
 
+
+// リアクションウインドウを生成する
 let reactionWindows = []    // リアクションウインドウ's (複数モニターに対応)
-function createReactionAllWindow() {
-  const reactionDisplays = screen.getAllDisplays()
-  log.debug("すべてのディスプレイ情報 : ", reactionDisplays)
-  reactionDisplays.forEach(display => {
+function createReactionAllWindow(ratio = 1.0) {
+  // 開いているリアクションウインドウがあればクローズ
+  reactionWindows.forEach(win => {
+    log.debug("ウインドウクローズ : ", win.getBounds())
+    win.close()
+  })
+
+  reactionWindows = []  // 初期化
+
+  screen.getAllDisplays().forEach(display => {
     if (display.bounds.x !== 0 || display.y !== 0) {
+
+      // ウインドウサイズを計算
+      h2 = Math.floor(display.workArea.height * ratio)
+      x2 = display.workArea.x
+      y2 = display.workArea.height - h2 + display.workArea.y
+      w2 = display.workArea.width
+
       let win = new BrowserWindow({
-        x: display.workArea.x,
-        y: display.workArea.y,
-        width: display.workArea.width,
-        height: display.workArea.height,
+        x: x2,
+        y: y2,
+        width: w2,
+        height: h2,
         webPreferences: {
           preload: path.join(__dirname, 'preload.js')
         },
@@ -128,6 +121,10 @@ function createReactionAllWindow() {
       win.setIgnoreMouseEvents(true)  // マウスイベントを無効化
       win.loadFile('./renderer/reaction.html')
       // win.loadURL('https://github.com')
+
+      log.debug("ディスプレイworkArea\t\t: ", display.workArea)
+      log.debug("ウインドウworkArea(", ratio*100, "%)\t: ", win.getBounds())
+
       reactionWindows.push(win)
     }
   })
@@ -176,7 +173,7 @@ app.on('window-all-closed', function () {
 //----------------------------------------
 let eventCode = uuidv4()
 ipcMain.handle('eventCode', (event, data) => {
-  log.debug("現在のeventCode   : ", eventCode)
+  log.debug("現在のeventCode : ", eventCode)
   // 任意のイベントコードを設定する場合
   if (data) {
     log.debug("変更後のeventCode : ", data)
