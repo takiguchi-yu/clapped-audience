@@ -133,3 +133,6 @@ dist
 
 # MacOS
 .DS_Store
+
+# npm
+npm-audit.html

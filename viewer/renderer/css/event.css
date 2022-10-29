@@ -63,7 +63,7 @@ body
   }
 }
 
-.box span
+.box>span
 {
   position: absolute;
   inset: 5px;
@@ -77,6 +77,9 @@ body
   margin: 5px;
   transform: translateY(50%);
   z-index: 2;
+  color: #fff;
+  text-align: center;
+  padding: 10px;
 }
 
 .box .card button
@@ -106,12 +109,6 @@ body
 .box .card button:hover
 {
   opacity: 0.9;
-}
-
-.box .card p
-{
-  color: #fff;
-  text-align: center;
 }
 
 /* くるくる */
@@ -152,4 +149,19 @@ body
   height: 100%;
   object-fit: cover;
   transform: scale(0.9);
+}
+
+
+
+
+/* 任意のイベントに接続画面 */
+
+.box .card .field input
+{
+  width: 100%;
+  height: 50px;
+  padding: 5px;
+  margin-bottom: 20px;
+  border-radius: 5px;
+  z-index: 100;
 }

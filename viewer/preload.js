@@ -20,6 +20,7 @@ contextBridge.exposeInMainWorld(
   {
     nyan: (data) => ipcRenderer.invoke('nyan', data),
     wan: (data) => ipcRenderer.invoke('wan', data),
-    eventCode: () => ipcRenderer.invoke('eventCode'),
+    eventCode: (data) => ipcRenderer.invoke('eventCode', data), // イベントコードを設定
+    onUpdateEventCode: (callback) => ipcRenderer.on('update-eventCode', callback),  // イベントコードを再設定
   }
 )

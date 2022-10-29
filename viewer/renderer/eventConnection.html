@@ -15,13 +15,19 @@
   <div class="box">
     <span></span>
     <div class="card">
-      <button class="button" id="createBtn">URLをコピーする</button>
-      <p>イベントコードの取得に失敗しました<br>@takiguchi-yu に問い合わせてください</p>
-      <p><a href="./eventConnection.html">任意のイベントに接続する</a></p>
+      <div class="field">
+        <input type="text" id="eventCode" required size="45" pattern="[a-zA-Z0-9-]+" title="英数字、ハイフンが入力可能です" placeholder="任意の eventCode を入力してください">
+      </div>
+      <div>
+        <button onclick="eventConnection()">接続</button>
+      </div>
+      <div>
+        <a href="./event.html">戻る</a>
+      </div>
     </div>
   </div> 
 
   <!-- You can also require other files to run in this process -->
-  <script src="./js/event.js"></script>
+  <script src="./js/eventConnection.js"></script>
 </body>
 </html>

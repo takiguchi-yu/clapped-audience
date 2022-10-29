@@ -1,7 +1,7 @@
 import * as cdk from 'aws-cdk-lib';
 import { Duration, RemovalPolicy } from 'aws-cdk-lib';
 import { CfnApi, CfnDeployment, CfnIntegration, CfnRoute, CfnStage } from 'aws-cdk-lib/aws-apigatewayv2';
-import { AttributeType, BillingMode, ProjectionType, Table } from 'aws-cdk-lib/aws-dynamodb';
+import { AttributeType, ProjectionType, Table } from 'aws-cdk-lib/aws-dynamodb';
 import { Effect, PolicyStatement, Role, ServicePrincipal } from 'aws-cdk-lib/aws-iam';
 import { AssetCode, Function, Runtime } from 'aws-cdk-lib/aws-lambda';
 import { Construct } from 'constructs';
@@ -27,9 +27,25 @@ export class ServerStack extends cdk.Stack {
         name: "connectionId",
         type: AttributeType.STRING,
       },
-      readCapacity: 1,
-      writeCapacity: 1,
+      // readCapacity: 5,
+      // writeCapacity: 5,
       removalPolicy: RemovalPolicy.DESTROY, // DESTROY: テーブルにデータが入っている状態でcdk destroyが実行された時、データごとテーブルを削除する
+      timeToLiveAttribute: 'expiryDate',
+    });
+
+    // 読み込みキャパシティー
+    table.autoScaleReadCapacity({
+      minCapacity: 1,
+      maxCapacity: 10,
+    }).scaleOnUtilization({
+      targetUtilizationPercent: 70,
+    });
+    // 書き込みキャパシティー
+    table.autoScaleWriteCapacity({
+      minCapacity: 1,
+      maxCapacity: 10,
+    }).scaleOnUtilization({
+      targetUtilizationPercent: 70,
     });
 
     // add global secandary index (GSI)
@@ -39,13 +55,28 @@ export class ServerStack extends cdk.Stack {
         name: "eventCode",
         type: AttributeType.STRING,
       },
-      readCapacity: 1,
-      writeCapacity: 1,
+      // readCapacity: 5,
+      // writeCapacity: 5,
       projectionType: ProjectionType.ALL,
     });
 
+    // GSI読み込みキャパシティー
+    table.autoScaleGlobalSecondaryIndexReadCapacity('eventCodeIndex', {
+      minCapacity: 1,
+      maxCapacity: 10,
+    }).scaleOnUtilization({
+      targetUtilizationPercent: 70,
+    });
+    // GSI書き込みキャパシティー
+    table.autoScaleGlobalSecondaryIndexWriteCapacity('eventCodeIndex', {
+      minCapacity: 1,
+      maxCapacity: 10,
+    }).scaleOnUtilization({
+      targetUtilizationPercent: 70,
+    });
+
     const connectFunc = new Function(this, 'connect-lambda', {
-      code: new AssetCode('./onconnect'),
+      code: new AssetCode('./src/onconnect'),
       handler: 'app.handler',
       runtime: Runtime.NODEJS_16_X,
       timeout: Duration.seconds(180),
@@ -58,7 +89,7 @@ export class ServerStack extends cdk.Stack {
     table.grantReadWriteData(connectFunc)
 
     const disconnectFunc = new Function(this, 'disconnect-lambda', {
-      code: new AssetCode('./ondisconnect'),
+      code: new AssetCode('./src/ondisconnect'),
       handler: 'app.handler',
       runtime: Runtime.NODEJS_16_X,
       timeout: Duration.seconds(180),
@@ -71,7 +102,7 @@ export class ServerStack extends cdk.Stack {
     table.grantReadWriteData(disconnectFunc)
 
     const messageFunc = new Function(this, 'message-lambda', {
-      code: new AssetCode('./sendmessage'),
+      code: new AssetCode('./src/sendmessage'),
       handler: 'app.handler',
       runtime: Runtime.NODEJS_16_X,
       timeout: Duration.seconds(180),
@@ -155,9 +186,13 @@ export class ServerStack extends cdk.Stack {
 
     new CfnStage(this, `${name}-stage`, {
       apiId: api.ref,
-      autoDeploy: true,
+      // autoDeploy: true,
       deploymentId: deployment.ref,
       stageName: "dev",
+      defaultRouteSettings: {
+        throttlingBurstLimit: 3000,
+        throttlingRateLimit: 1000,
+      }
     });
 
     deployment.node.addDependency(connectRoute)

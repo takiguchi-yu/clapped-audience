@@ -36,6 +36,8 @@
     "@aws-cdk/core:target-partitions": [
       "aws",
       "aws-cn"
-    ]
-  }
+    ],
+    "@aws-cdk/core:bootstrapQualifier": "clappedsrv"
+  },
+  "toolkitStackName": "CDKToolKitClappedAudienceSrv"
 }

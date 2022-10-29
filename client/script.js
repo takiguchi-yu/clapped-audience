@@ -1,4 +1,4 @@
-const endpoint = 'wss://fyo5gy2ev5.execute-api.ap-northeast-1.amazonaws.com/dev'
+const endpoint = 'wss://0wumxnt787.execute-api.ap-northeast-1.amazonaws.com/dev'
 
 const queryString = new URLSearchParams(location.search);
 const eventCode = queryString.get('eventCode')
@@ -34,7 +34,7 @@ function wsConnection(endpoint, eventCode) {
     }).bind(this), currentReconnectDelay + Math.floor(Math.random() * 3000))  // ランダム指数バックオフ
   }
 
-  function reconnectToWebsocket() {
+  reconnectToWebsocket = () => {
     if(currentReconnectDelay < maxReconnectDelay) {
       currentReconnectDelay*=2;
       s(" RECONNECTION...");

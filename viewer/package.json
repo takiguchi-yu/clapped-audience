@@ -1,7 +1,7 @@
 {
   "name": "clapped_audience",
-  "productName": "ClappedAudience",
-  "version": "1.0.0",
+  "productName": "拍手喝采v1.3.4",
+  "version": "1.3.4",
   "description": "オンラインイベントリアクションツール発表者用アプリケーション",
   "main": "main.js",
   "scripts": {
@@ -9,25 +9,24 @@
     "start": "electron-forge start",
     "package": "electron-forge package",
     "make": "electron-forge make",
-    "publish": "electron-forge publish",
-    "build": "electron-packager . --icon=assets/app_icon.icns --overwrite"
+    "publish": "electron-forge publish"
   },
   "author": "takiguchi-yu",
   "license": "MIT",
   "devDependencies": {
-    "@electron-forge/cli": "^6.0.0-beta.65",
-    "@electron-forge/maker-deb": "^6.0.0-beta.65",
-    "@electron-forge/maker-rpm": "^6.0.0-beta.65",
-    "@electron-forge/maker-squirrel": "^6.0.0-beta.65",
-    "@electron-forge/maker-zip": "^6.0.0-beta.65",
-    "@electron-forge/publisher-github": "^6.0.0-beta.65",
-    "electron": "^20.0.2",
-    "electron-packager": "^16.0.0",
+    "@electron-forge/cli": "^6.0.0-beta.70",
+    "@electron-forge/maker-deb": "^6.0.0-beta.70",
+    "@electron-forge/maker-rpm": "^6.0.0-beta.70",
+    "@electron-forge/maker-squirrel": "^6.0.0-beta.70",
+    "@electron-forge/maker-zip": "^6.0.0-beta.70",
+    "@electron-forge/publisher-github": "^6.0.0-beta.70",
+    "electron": "^21.2.0",
     "electron-reloader": "^1.2.3"
   },
   "dependencies": {
+    "electron-log": "^4.4.8",
     "electron-squirrel-startup": "^1.0.0",
-    "uuid": "^8.3.2"
+    "uuid": "^9.0.0"
   },
   "config": {
     "forge": "./forge.config.js"
