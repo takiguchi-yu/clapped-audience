@@ -7,13 +7,14 @@ const env = process.env.NODE_ENV || 'development'
 const log = require('electron-log')
 log.transports.file.level = false;
 log.transports.console.level = 'debug';
-// log.transports.file.resolvePath = () => path.join(__dirname, 'logs/main.log');
+// ログは以下に出力されます（Macの場合）
+// ~/Library/Logs/拍手喝采{バージョン}
 
 if (env === 'development') {
   try {
     // ホットリロード
     require('electron-reloader')(module, {
-      debug: false,
+      debug: true,
       watchRenderer: true
     });
   } catch (_) { log.error('Error'); }
@@ -109,15 +110,15 @@ function createReactionAllWindow(ratio = 1.0) {
         y: y2,
         width: w2,
         height: h2,
-        webPreferences: {
-          preload: path.join(__dirname, 'preload.js')
-        },
         transparent: true,  // 透明化
         frame: false,
         hasShadow: false,
+        webPreferences: {
+          preload: path.join(__dirname, 'preload.js')
+        },
       })
       win.setAlwaysOnTop(true, "screen-saver")  // 最前面表示
-      win.setVisibleOnAllWorkspaces(true)  // すべてのワークスペース（デスクトップ）で表示（MacOSのみ）
+      win.setVisibleOnAllWorkspaces(true, {visibleOnFullScreen: true})  // すべてのワークスペース（デスクトップ）で表示（MacOSのみ）
       win.setIgnoreMouseEvents(true)  // マウスイベントを無効化
       win.loadFile('./renderer/reaction.html')
       // win.loadURL('https://github.com')
@@ -147,8 +148,6 @@ function enableLogging(checked) {
 app.whenReady().then(() => {
   // イベント設定画面を作成
   createEventWindow()
-  // リアクション画面を作成
-  // createReactionWindow()
   // タスクバーを作成
   createTaskBar()
   // 別モニターにもリアクション画面を作成
