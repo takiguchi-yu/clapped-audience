@@ -31,3 +31,12 @@ npm start
 
 * on macOS: ~/Library/Logs/拍手喝采{バージョン}/{process type}.log
 * on Windows: %USERPROFILE%\AppData\Roaming\拍手喝采{バージョン}\logs\{process type}.log
+
+## そのほか
+
+npm audit report を HTML で出力する方法
+
+```
+npm i -g npm-audit-html
+npm audit --json | npm-audit-html
+```

@@ -14,7 +14,7 @@ if (env === 'development') {
   try {
     // ホットリロード
     require('electron-reloader')(module, {
-      debug: true,
+      debug: false,
       watchRenderer: true
     });
   } catch (_) { log.error('Error'); }
